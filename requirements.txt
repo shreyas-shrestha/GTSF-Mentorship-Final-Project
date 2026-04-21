@@ -1,0 +1,12 @@
+fredapi
+requests
+polygon-api-client
+hmmlearn
+statsmodels
+scikit-learn
+matplotlib
+seaborn
+pandas
+numpy
+yfinance
+jupyter
