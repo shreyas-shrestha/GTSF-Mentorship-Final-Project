@@ -5,7 +5,7 @@
 Can yield curve dynamics identify macro stress regimes and predict
 forward equity volatility with statistical validity?
 
-### What This Project Does
+### Main Objectives
 Constructs a novel four-component Yield Curve Tension Index (YCTI)
 and tests it as a forward volatility predictor using Newey-West
 corrected regression. Validates an unsupervised HMM regime model
@@ -19,7 +19,7 @@ across 15 international recession episodes without retraining.
 - YCTI overlay improves vol-target Sharpe 0.596 -> 0.644
 
 ### Data
-Pre-downloaded and available in /data - no API calls required to run.
+Pre-downloaded and available in /data.
 - yield_curve_2000_2024.csv: FRED daily Treasury yields 2000-2024
 - spy_ohlcv_2000_2024.csv: SPY daily OHLCV 2000-2024
 
