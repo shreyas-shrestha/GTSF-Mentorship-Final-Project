@@ -504,9 +504,27 @@ def plot_ycti_signal(ycti_df, features_df, spy_df, signals_df, recession_bands=N
     axes[0].plot(spy_df.index, spy_df["close"], color=COLORS[0], linewidth=1.3)
     axes[0].set_ylabel("SPY")
     axes[0].set_title("Yield Curve Tension Index Macro Risk System", fontsize=15, pad=12)
-    if not signals_df.empty and "date" in signals_df:
-        for date in pd.to_datetime(signals_df["date"]):
+    signal_dates = pd.Index([])
+    if not signals_df.empty:
+        if "date" in signals_df.columns:
+            signal_dates = pd.to_datetime(signals_df["date"])
+        elif isinstance(signals_df.index, pd.DatetimeIndex):
+            signal_dates = pd.to_datetime(signals_df.index)
+
+    if len(signal_dates) > 0:
+        for date in signal_dates:
             axes[0].axvline(date, color=COLORS[1], linestyle="--", linewidth=1)
+        first_signal = signal_dates[0]
+        axes[0].text(
+            first_signal,
+            spy_df["close"].max() * 0.95,
+            f"Signal: {first_signal.date()}",
+            color=COLORS[1],
+            fontsize=9,
+            ha="left",
+            va="top",
+            bbox={"facecolor": "black", "edgecolor": COLORS[1], "alpha": 0.65, "boxstyle": "round,pad=0.25"},
+        )
 
     axes[1].plot(ycti_df.index, ycti_df["ycti"], color=COLORS[3], linewidth=1.4)
     axes[1].axhline(1.0, color=COLORS[1], linestyle="--", linewidth=1, label="Alert threshold")
