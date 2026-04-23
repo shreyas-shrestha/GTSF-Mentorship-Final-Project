@@ -30,6 +30,25 @@ DEFAULT_REGIME_LABELS = {
 }
 
 
+def _prepare_light_style():
+    plt.style.use("default")
+    plt.rcParams.update(
+        {
+            "figure.facecolor": "white",
+            "axes.facecolor": "white",
+            "savefig.facecolor": "white",
+            "savefig.edgecolor": "white",
+            "axes.edgecolor": "#333333",
+            "axes.labelcolor": "#111111",
+            "xtick.color": "#111111",
+            "ytick.color": "#111111",
+            "text.color": "#111111",
+            "grid.color": "#d9d9d9",
+            "grid.alpha": 0.35,
+        }
+    )
+
+
 def _config_get(config, name, default):
     if isinstance(config, dict):
         return config.get(name, default)
@@ -51,7 +70,7 @@ def _state_segments(index, states):
 
 
 def _plot_hmm_regimes(states_df):
-    plt.style.use("dark_background")
+    _prepare_light_style()
     os.makedirs("./figures", exist_ok=True)
 
     fig, axes = plt.subplots(3, 1, figsize=(15, 9), sharex=True)
@@ -255,7 +274,7 @@ def rolling_ols(features_df, window=252) -> pd.DataFrame:
     print(f"Beta value at that date: {results_df.loc[strongest, 'beta_10y2y']:.3f}")
     print(f"R² at that date: {results_df.loc[strongest, 'r_squared']:.3f}")
 
-    plt.style.use("dark_background")
+    _prepare_light_style()
     os.makedirs("./figures", exist_ok=True)
     fig, axes = plt.subplots(3, 1, figsize=(15, 10), sharex=True)
 
@@ -277,7 +296,7 @@ def rolling_ols(features_df, window=252) -> pd.DataFrame:
         "Negative beta = flatter curve predicts higher crisis regime probability",
         transform=axes[0].transAxes,
         color=OLS_COLORS[1],
-        bbox={"facecolor": "black", "edgecolor": OLS_COLORS[1], "alpha": 0.65, "boxstyle": "round,pad=0.35"},
+        bbox={"facecolor": "white", "edgecolor": OLS_COLORS[1], "alpha": 0.95, "boxstyle": "round,pad=0.35"},
     )
 
     axes[1].plot(results_df.index, results_df["beta_10y3m"], color=OLS_COLORS[1], linewidth=1.4)
@@ -364,7 +383,7 @@ def backtest_regime_strategy(features_df, target_vol=0.10):
         "regime": metrics(df["ret_regime"].dropna(), "Vol-Target + Regime Overlay"),
     }
 
-    plt.style.use("dark_background")
+    _prepare_light_style()
     os.makedirs("./figures", exist_ok=True)
     fig, ax = plt.subplots(figsize=(14, 6.5))
     ax.plot(results["bnh"]["cum_returns"], color=COLORS[0], linewidth=1.5, label="Buy & Hold SPY")

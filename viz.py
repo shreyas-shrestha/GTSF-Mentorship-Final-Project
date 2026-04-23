@@ -18,7 +18,23 @@ DEFAULT_RECESSION_BANDS = [
 
 
 def _prepare_style():
-    plt.style.use("dark_background")
+    plt.style.use("default")
+    sns.set_theme(style="whitegrid")
+    plt.rcParams.update(
+        {
+            "figure.facecolor": "white",
+            "axes.facecolor": "white",
+            "savefig.facecolor": "white",
+            "savefig.edgecolor": "white",
+            "axes.edgecolor": "#333333",
+            "axes.labelcolor": "#111111",
+            "xtick.color": "#111111",
+            "ytick.color": "#111111",
+            "text.color": "#111111",
+            "grid.color": "#d9d9d9",
+            "grid.alpha": 0.35,
+        }
+    )
     os.makedirs("./figures", exist_ok=True)
 
 
@@ -137,7 +153,7 @@ def plot_scatter_spread_vs_vol(features_df, recession_bands=None):
         transform=ax.transAxes,
         ha="left",
         va="top",
-        bbox={"facecolor": "black", "edgecolor": COLORS[0], "alpha": 0.65, "boxstyle": "round,pad=0.35"},
+        bbox={"facecolor": "white", "edgecolor": COLORS[0], "alpha": 0.95, "boxstyle": "round,pad=0.35"},
     )
     ax.set_xlabel("10Y-2Y Spread (%)")
     ax.set_ylabel("Forward 63-Day SPY Volatility")
@@ -248,7 +264,7 @@ def plot_inversion_event_study(features_df, recession_bands=None):
         f"{len(inversion_starts)} inversion starts detected",
         transform=ax.transAxes,
         color=COLORS[1],
-        bbox={"facecolor": "black", "edgecolor": COLORS[1], "alpha": 0.65, "boxstyle": "round,pad=0.35"},
+        bbox={"facecolor": "white", "edgecolor": COLORS[1], "alpha": 0.95, "boxstyle": "round,pad=0.35"},
     )
     ax.legend(loc="upper left")
 
@@ -273,7 +289,7 @@ def plot_rolling_correlation(features_df, recession_bands=None):
         "Negative correlation means spread widening/tightening is moving opposite SPY returns over the last 63 trading days.",
         transform=ax.transAxes,
         color=COLORS[1],
-        bbox={"facecolor": "black", "edgecolor": COLORS[1], "alpha": 0.65, "boxstyle": "round,pad=0.35"},
+        bbox={"facecolor": "white", "edgecolor": COLORS[1], "alpha": 0.95, "boxstyle": "round,pad=0.35"},
     )
     ax.set_ylabel("Rolling correlation")
     ax.set_xlabel("Date")
@@ -312,7 +328,7 @@ def plot_equity_curves(df, recession_bands=None):
     ax.plot(cum_bnh, color=COLORS[2], linewidth=1.5, alpha=0.8, label="Buy & Hold SPY")
     ax.plot(cum_base, color=COLORS[0], linewidth=1.5, label="Vol-Target")
     ax.plot(cum_regime, color=COLORS[3], linewidth=2.0, label="Vol-Target + Regime")
-    ax.axhline(1.0, color="white", linestyle="--", linewidth=1, alpha=0.45)
+    ax.axhline(1.0, color="#666666", linestyle="--", linewidth=1, alpha=0.7)
 
     for series, color in [(cum_bnh, COLORS[2]), (cum_base, COLORS[0]), (cum_regime, COLORS[3])]:
         ax.annotate(f"{series.iloc[-1]:.2f}x", xy=(series.index[-1], series.iloc[-1]),
@@ -324,7 +340,7 @@ def plot_equity_curves(df, recession_bands=None):
         "Regime OL:   Sharpe 0.517 | MaxDD -26.3%"
     )
     ax.text(0.02, 0.92, text, transform=ax.transAxes, va="top",
-            bbox=dict(boxstyle="round", facecolor="black", alpha=0.7))
+            bbox=dict(boxstyle="round", facecolor="white", edgecolor="#999999", alpha=0.95))
     ax.set_title("Strategy Comparison: 2000-2024 | Regime Overlay as Macro Insurance", fontsize=14, pad=12)
     ax.set_ylabel("Cumulative Return (1.0 = $1 invested)")
     ax.set_xlabel("Date")
@@ -366,7 +382,7 @@ def plot_sharpe_decomposition(features_df):
 
     sharpes = [metrics[regimes[0]]["Sharpe"], metrics[regimes[1]]["Sharpe"]]
     axes[1].barh(regimes, sharpes, color=[COLORS[0], COLORS[2]])
-    axes[1].axvline(0, color="white", linestyle="--", linewidth=1)
+    axes[1].axvline(0, color="#666666", linestyle="--", linewidth=1)
     axes[1].set_title("Sharpe Ratio by Macro Regime")
     for i, val in enumerate(sharpes):
         axes[1].text(val, i, f" {val:.3f}", va="center")
@@ -403,7 +419,7 @@ def plot_cross_market_validation(results_dict):
     axes[0].set_yticks(y)
     axes[0].set_yticklabels(markets)
     axes[0].invert_yaxis()
-    axes[0].axvline(0.50, color="white", linestyle="--", linewidth=1, alpha=0.7)
+    axes[0].axvline(0.50, color="#666666", linestyle="--", linewidth=1, alpha=0.7)
     axes[0].axvline(0.80, color=COLORS[3], linestyle="--", linewidth=1, alpha=0.8)
     axes[0].set_xlim(0, 1.12)
     axes[0].set_xlabel("Capture Rate (% of recession days in crisis regime)")
@@ -416,16 +432,16 @@ def plot_cross_market_validation(results_dict):
     y_scatter = [results_dict[m]["capture"] for m in scatter_markets]
     sizes = [results_dict[m]["recessions"] * 100 for m in scatter_markets]
     scatter_colors = [color_for_capture(results_dict[m]["capture"]) for m in scatter_markets]
-    axes[1].scatter(x, y_scatter, s=sizes, c=scatter_colors, alpha=0.85, edgecolors="white")
-    axes[1].axvline(0.30, color="white", linestyle="--", linewidth=1, alpha=0.7)
-    axes[1].axhline(0.70, color="white", linestyle="--", linewidth=1, alpha=0.7)
+    axes[1].scatter(x, y_scatter, s=sizes, c=scatter_colors, alpha=0.85, edgecolors="#333333")
+    axes[1].axvline(0.30, color="#666666", linestyle="--", linewidth=1, alpha=0.7)
+    axes[1].axhline(0.70, color="#666666", linestyle="--", linewidth=1, alpha=0.7)
     axes[1].set_xlim(0, max(x) + 0.12)
     axes[1].set_ylim(0, 1.1)
     axes[1].set_title("Capture Rate vs False Positive Rate")
     axes[1].set_xlabel("False Positive Rate")
     axes[1].set_ylabel("Capture Rate")
     axes[1].text(0.03, 0.92, "High Capture\nLow False Positives", transform=axes[1].transAxes,
-                 color=COLORS[3], bbox={"facecolor": "black", "alpha": 0.6, "boxstyle": "round"})
+                 color=COLORS[3], bbox={"facecolor": "white", "edgecolor": "#999999", "alpha": 0.95, "boxstyle": "round"})
     for market, xv, yv in zip(scatter_markets, x, y_scatter):
         axes[1].text(xv + 0.01, yv, market, va="center")
 
@@ -523,7 +539,7 @@ def plot_ycti_signal(ycti_df, features_df, spy_df, signals_df, recession_bands=N
             fontsize=9,
             ha="left",
             va="top",
-            bbox={"facecolor": "black", "edgecolor": COLORS[1], "alpha": 0.65, "boxstyle": "round,pad=0.25"},
+            bbox={"facecolor": "white", "edgecolor": COLORS[1], "alpha": 0.95, "boxstyle": "round,pad=0.25"},
         )
 
     axes[1].plot(ycti_df.index, ycti_df["ycti"], color=COLORS[3], linewidth=1.4)
@@ -550,7 +566,7 @@ def plot_ycti_signal(ycti_df, features_df, spy_df, signals_df, recession_bands=N
         axes[3].plot(base_sharpe.index, base_sharpe, color=COLORS[0], label="Vol-target")
         axes[3].plot(ycti_sharpe.index, ycti_sharpe, color=COLORS[3], label="YCTI system")
         axes[3].legend(loc="upper left")
-    axes[3].axhline(0, color="white", linestyle="--", linewidth=1, alpha=0.4)
+    axes[3].axhline(0, color="#666666", linestyle="--", linewidth=1, alpha=0.6)
     axes[3].set_ylabel("Rolling Sharpe")
     axes[3].set_xlabel("Date")
 
