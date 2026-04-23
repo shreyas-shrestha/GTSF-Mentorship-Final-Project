@@ -26,7 +26,7 @@ ROLLING_WINDOWS = [21, 63, 126, 252]
 
 FIGURE_DIR = "./figures"
 
-HMM_STATES = 3
+HMM_STATES = 2
 HMM_FEATURES = ["spread_10y2y", "spread_10y3m", "vol_21d_10y", "spy_vol_21d"]
 
 OLS_WINDOW = 252
@@ -40,9 +40,8 @@ RECESSION_BANDS = [
 ]
 
 REGIME_LABELS = {
-    0: "Low Vol / Bull",
-    1: "Transitional",
-    2: "Crisis / High Vol",
+    0: "Late-Cycle / Pre-Crisis",
+    1: "Post-Crisis / Re-steepening",
 }
 
 THEME_COLORS = ["#00C9FF", "#FFE66D", "#FF6B6B"]
