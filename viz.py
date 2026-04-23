@@ -507,15 +507,18 @@ def plot_ycti_signal(ycti_df, features_df, spy_df, signals_df, recession_bands=N
     if "ycti_state" not in df.columns:
         df["ycti_state"] = "Normal"
 
-    fig, axes = plt.subplots(4, 1, figsize=(15, 12), sharex=True)
-    state_colors = {"Normal": COLORS[0], "Alert": COLORS[1], "Defensive": COLORS[2]}
+    fig, axes = plt.subplots(4, 1, figsize=(15, 11), sharex=True)
+    state_colors = {"Normal": "#DCEAF3", "Alert": "#F7E8BF", "Defensive": "#F4D3CF"}
+    groups = df["ycti_state"].ne(df["ycti_state"].shift()).cumsum()
 
     for ax in axes:
+        ax.grid(alpha=0.25)
+
+    for ax in axes[:2]:
         _add_recession_bands(ax, bands)
-        groups = df["ycti_state"].ne(df["ycti_state"].shift()).cumsum()
         for _, period in df.groupby(groups):
             state = period["ycti_state"].iloc[0]
-            ax.axvspan(period.index[0], period.index[-1], color=state_colors[state], alpha=0.07, linewidth=0)
+            ax.axvspan(period.index[0], period.index[-1], color=state_colors[state], alpha=0.18, linewidth=0)
 
     axes[0].plot(spy_df.index, spy_df["close"], color=COLORS[0], linewidth=1.3)
     axes[0].set_ylabel("SPY")
@@ -529,7 +532,7 @@ def plot_ycti_signal(ycti_df, features_df, spy_df, signals_df, recession_bands=N
 
     if len(signal_dates) > 0:
         for date in signal_dates:
-            axes[0].axvline(date, color=COLORS[1], linestyle="--", linewidth=1)
+            axes[0].axvline(date, color=COLORS[1], linestyle="--", linewidth=1.2)
         first_signal = signal_dates[0]
         axes[0].text(
             first_signal,
@@ -541,30 +544,49 @@ def plot_ycti_signal(ycti_df, features_df, spy_df, signals_df, recession_bands=N
             va="top",
             bbox={"facecolor": "white", "edgecolor": COLORS[1], "alpha": 0.95, "boxstyle": "round,pad=0.25"},
         )
+    axes[0].text(
+        0.012,
+        0.92,
+        "Background: blue=Normal, gold=Alert, red=Defensive",
+        transform=axes[0].transAxes,
+        fontsize=9,
+        color="#444444",
+        bbox={"facecolor": "white", "edgecolor": "#BBBBBB", "alpha": 0.95, "boxstyle": "round,pad=0.25"},
+    )
 
-    axes[1].plot(ycti_df.index, ycti_df["ycti"], color=COLORS[3], linewidth=1.4)
+    axes[1].plot(ycti_df.index, ycti_df["ycti"], color=COLORS[3], linewidth=1.5)
     axes[1].axhline(1.0, color=COLORS[1], linestyle="--", linewidth=1, label="Alert threshold")
     axes[1].axhline(-0.5, color=COLORS[2], linestyle="--", linewidth=1, label="Exit threshold")
+    axes[1].axhline(0, color="#666666", linestyle=":", linewidth=0.9, alpha=0.7)
     axes[1].set_ylabel("YCTI")
     axes[1].legend(loc="upper left")
 
     component_cols = ["spread_momentum_z", "butterfly_z", "vol_ratio_z", "spread_deviation_z"]
     components = ycti_df[component_cols].fillna(0)
-    axes[2].stackplot(
-        components.index,
-        [components[col] for col in component_cols],
-        labels=["Spread momentum", "Butterfly", "Vol ratio", "Spread deviation"],
-        colors=COLORS[:4],
-        alpha=0.65,
-    )
+    component_labels = {
+        "spread_momentum_z": "Spread momentum",
+        "butterfly_z": "Butterfly",
+        "vol_ratio_z": "Vol ratio",
+        "spread_deviation_z": "Spread deviation",
+    }
+    for col, color in zip(component_cols, COLORS[:4]):
+        axes[2].plot(
+            components.index,
+            components[col],
+            label=component_labels[col],
+            color=color,
+            linewidth=1.0,
+            alpha=0.9,
+        )
+    axes[2].axhline(0, color="#666666", linestyle=":", linewidth=0.9, alpha=0.7)
     axes[2].set_ylabel("Components")
     axes[2].legend(loc="upper left", ncol=2)
 
     if {"ret_base", "ret_ycti"}.issubset(df.columns):
         base_sharpe = df["ret_base"].rolling(252).mean() / df["ret_base"].rolling(252).std() * np.sqrt(252)
         ycti_sharpe = df["ret_ycti"].rolling(252).mean() / df["ret_ycti"].rolling(252).std() * np.sqrt(252)
-        axes[3].plot(base_sharpe.index, base_sharpe, color=COLORS[0], label="Vol-target")
-        axes[3].plot(ycti_sharpe.index, ycti_sharpe, color=COLORS[3], label="YCTI system")
+        axes[3].plot(base_sharpe.index, base_sharpe, color=COLORS[0], linewidth=1.3, label="Vol-target")
+        axes[3].plot(ycti_sharpe.index, ycti_sharpe, color=COLORS[3], linewidth=1.3, label="YCTI system")
         axes[3].legend(loc="upper left")
     axes[3].axhline(0, color="#666666", linestyle="--", linewidth=1, alpha=0.6)
     axes[3].set_ylabel("Rolling Sharpe")
