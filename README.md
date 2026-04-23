@@ -1,5 +1,5 @@
 # Yield Curve Tension Index
-## Georgia Tech Quantitative Mentorship | Spring 2026
+## GTSF Quant Mentorship | Spring 2026
 
 ### Research Question
 Can yield curve dynamics identify macro stress regimes and predict
