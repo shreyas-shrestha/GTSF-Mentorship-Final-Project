@@ -8,7 +8,7 @@ import pandas as pd
 import seaborn as sns
 
 
-COLORS = ["#00C9FF", "#FFE66D", "#FF6B6B", "#A8E063", "#C77DFF"]
+COLORS = ["#0B6E99", "#A07900", "#B42318", "#2D7F5E", "#6A4C93"]
 TENOR_ORDER = ["3m", "2y", "5y", "10y", "30y"]
 DEFAULT_RECESSION_BANDS = [
     ("2001-03-01", "2001-11-30"),

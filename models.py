@@ -11,8 +11,8 @@ from hmmlearn.hmm import GaussianHMM
 from sklearn.preprocessing import StandardScaler
 
 
-COLORS = ["#00C9FF", "#FFE66D", "#FF6B6B", "#A8E063", "#C77DFF"]
-OLS_COLORS = ["#00C9FF", "#FFE66D", "#FF6B6B"]
+COLORS = ["#0B6E99", "#A07900", "#B42318", "#2D7F5E", "#6A4C93"]
+OLS_COLORS = ["#0B6E99", "#A07900", "#B42318"]
 NBER_RECESSION_BANDS = [
     ("2001-03-01", "2001-11-30"),
     ("2007-12-01", "2009-06-30"),
