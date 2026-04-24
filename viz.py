@@ -413,7 +413,7 @@ def plot_cross_market_validation(results_dict):
         return COLORS[2]
 
     colors = [color_for_capture(capture) for capture in captures]
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6.5))
+    fig, axes = plt.subplots(1, 2, figsize=(16.5, 6.8), gridspec_kw={"width_ratios": [1.12, 1]})
     y = np.arange(len(markets))
     axes[0].barh(y, captures, color=colors)
     axes[0].set_yticks(y)
@@ -421,11 +421,21 @@ def plot_cross_market_validation(results_dict):
     axes[0].invert_yaxis()
     axes[0].axvline(0.50, color="#666666", linestyle="--", linewidth=1, alpha=0.7)
     axes[0].axvline(0.80, color=COLORS[3], linestyle="--", linewidth=1, alpha=0.8)
-    axes[0].set_xlim(0, 1.12)
+    axes[0].set_xlim(0, 1.26)
     axes[0].set_xlabel("Capture Rate (% of recession days in crisis regime)")
     axes[0].set_title("Recession Capture Rate by Market")
     for i, (capture, rec_count) in enumerate(zip(captures, recessions)):
-        axes[0].text(capture + 0.02, i, f"{capture:.1%} ({rec_count} recessions)", va="center")
+        x_text = min(capture + 0.03, 1.15)
+        axes[0].text(
+            x_text,
+            i,
+            f"{capture:.1%}\n({rec_count} recessions)",
+            va="center",
+            ha="left",
+            fontsize=10,
+            linespacing=1.1,
+            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.9, "pad": 0.15},
+        )
 
     scatter_markets = [m for m in markets if results_dict[m]["fp_rate"] is not None]
     x = [results_dict[m]["fp_rate"] for m in scatter_markets]
